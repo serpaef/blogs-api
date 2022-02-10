@@ -25,6 +25,6 @@ async function validateEmail(req, res, next) {
 login.post('/',
   validateEmail,
   validatePassword,
-  doLogin));
+  doLogin);
 
 module.exports = login;
