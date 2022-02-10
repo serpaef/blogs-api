@@ -5,8 +5,7 @@ const User = (sequelize, Datatypes) => {
     password: Datatypes.STRING,
     image: Datatypes.STRING,
   }, {
-    timestamps: true,
-    updatedAt: false,
+    timestamps: false,
   });
 
   user.associate = (models) => {
