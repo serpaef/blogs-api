@@ -16,7 +16,6 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.STRING
-
       },
       password: {
         allowNull: false,
@@ -24,7 +23,7 @@ module.exports = {
       },
       image: {
         type: Sequelize.STRING
-      },
+      }
     });
   },
   down: async (queryInterface, _Sequelize) => {
