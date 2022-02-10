@@ -29,11 +29,24 @@ function validateEmail(req, res, next) {
   next();
 }
 
+function validatePassword(req, res, next) {
+  const { password } = req.body;
+
+  if (!password) return res.status(400).json({ message: '"password" is required' });
+
+  const validation = UserServices.validatePassword(password);
+  if (validation) {
+    return res.status(validation.status).json({ message: validation.message });
+  }
+
+  next();
+} 
+
 user.post('/',
   validateDisplayName,
   validateEmail,
   validatePassword,
-  verifyExistingEmail,
-  create);
+  // verifyExistingEmail,
+  /* create */);
 
 module.exports = user;

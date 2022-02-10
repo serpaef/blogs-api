@@ -24,7 +24,16 @@ function validateEmail(email) {
   return false;
 }
 
+function validatePassword(password) {
+  const error = sendError(400, '"password" length must be 6 characters long');
+
+  if (password.length !== 6) return error;
+
+  return false;
+}
+
 module.exports = { 
   validateDisplayName,
   validateEmail,
+  validatePassword,
 };
