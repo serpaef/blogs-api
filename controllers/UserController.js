@@ -40,13 +40,24 @@ function validatePassword(req, res, next) {
   }
 
   next();
-} 
+}
+
+async function verifyExistingEmail(req, res, next) {
+  const { email } = req.body;
+
+  const validation = await UserServices.verifyExistingEmail(email);
+  if (validation) {
+    return res.status(validation.status).json({ message: validation.message });
+  }
+
+  next();
+}
 
 user.post('/',
   validateDisplayName,
   validateEmail,
   validatePassword,
-  // verifyExistingEmail,
-  /* create */);
+  verifyExistingEmail,
+  create);
 
 module.exports = user;

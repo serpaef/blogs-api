@@ -1,3 +1,5 @@
+const { User } = require('../models');
+
 function sendError(status, message) {
   return { status, message };
 }
@@ -32,8 +34,18 @@ function validatePassword(password) {
   return false;
 }
 
+async function verifyExistingEmail(email) {
+  const error = sendError(409, 'User already registered');
+
+  const user = await User.findOne({ where: { email } }) || false;
+  if (user) return error;
+
+  return false;
+}
+
 module.exports = { 
   validateDisplayName,
   validateEmail,
   validatePassword,
+  verifyExistingEmail,
 };
