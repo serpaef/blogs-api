@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const UserServices = require('../services/UserServices');
+const { User } = require('../models');
 
 const { JWT_SECRET } = process.env;
 
@@ -18,10 +18,10 @@ async function validateEmail(req, res, next) {
       return res.status(400).json({ message: '"email" is not allowed to be empty' });
     }
 
-    const exists = await UserServices.verifyExistingEmail(email);
+    const exists = await User.findOne({ where: { email } });
     if (!exists) return res.status(400).json({ message: 'Invalid fields' });
 
-    req.user = exists;
+    req.user = exists.dataValues;
 
     next();
   } catch ({ message }) {
@@ -50,11 +50,16 @@ function validatePassword(req, res, next) {
   }
 }
 
-login.post(
-  '/',
+function doLogin(req, res) {
+  const { user } = req;
+  const token = jwt.sign(user.email, JWT_SECRET);
+
+  return res.status(200).json({ token });
+}
+
+login.post('/',
   validateEmail,
   validatePassword,
-  // doLogin
-);
+  doLogin);
 
 module.exports = login;
