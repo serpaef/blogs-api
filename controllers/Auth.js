@@ -12,7 +12,7 @@ async function Auth(req, res, next) {
   }
 
   try {
-    const { data } = jwt.verify(authorization, JWT_SECRET);
+    const data = jwt.verify(authorization, JWT_SECRET);
 
     const user = await User.findByPk(data.id);
 
