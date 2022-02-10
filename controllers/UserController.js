@@ -65,8 +65,9 @@ async function create(req, res) {
     const userData = req.body;
 
     const userCreated = await UserServices.create(userData);
+    const payload = { email: userCreated.email, id: userCreated.id };
     
-    const token = jwt.sign(userCreated.email, JWT_SECRET);
+    const token = jwt.sign(payload, JWT_SECRET);
 
     return res.status(201).json({ token });
   } catch ({ message }) {
