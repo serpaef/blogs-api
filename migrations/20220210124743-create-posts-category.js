@@ -8,17 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      postId: {
-        type: Sequelize.INTEGER
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+      postId: { type: Sequelize.INTEGER },
+      categoryId: { type: Sequelize.INTEGER },
     });
   },
   down: async (queryInterface, Sequelize) => {
