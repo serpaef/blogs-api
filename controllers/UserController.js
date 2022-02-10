@@ -16,6 +16,19 @@ function validateDisplayName(req, res, next) {
   next();
 }
 
+function validateEmail(req, res, next) {
+  const { email } = req.body;
+  
+  if (!email) return res.status(400).json({ message: '"email" is required' });
+
+  const validation = UserServices.validateEmail(email);
+  if (validation) {
+    return res.status(validation.status).json({ message: validation.message });
+  }
+
+  next();
+}
+
 user.post('/',
   validateDisplayName,
   validateEmail,

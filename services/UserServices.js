@@ -13,4 +13,18 @@ function validateDisplayName(displayName) {
   return false;
 }
 
-module.exports = { validateDisplayName };
+function validateEmail(email) {
+  const error = sendError(400, '"email" must be a valid email');
+  
+  const emailRegex = /\w{1,}@\w{1,}\.\w{1,}/;
+  if (!emailRegex.test(email)) {
+    return error;
+  }
+
+  return false;
+}
+
+module.exports = { 
+  validateDisplayName,
+  validateEmail,
+};
