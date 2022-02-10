@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const UserServices = require('../services/UserServices');
 
+const { JWT_SECRET } = process.env;
+
 const user = express.Router();
 
 function validateDisplayName(req, res, next) {
@@ -43,14 +45,34 @@ function validatePassword(req, res, next) {
 }
 
 async function verifyExistingEmail(req, res, next) {
-  const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-  const validation = await UserServices.verifyExistingEmail(email);
-  if (validation) {
-    return res.status(validation.status).json({ message: validation.message });
+    const validation = await UserServices.verifyExistingEmail(email);
+    if (validation) {
+      return res.status(validation.status).json({ message: validation.message });
+    }
+
+    next();
+  } catch ({ message }) {
+    console.log(message);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
   }
+}
 
-  next();
+async function create(req, res) {
+  try {
+    const userData = req.body;
+
+    const userCreated = await UserServices.create(userData);
+    
+    const token = jwt.sign(userCreated.email, JWT_SECRET);
+
+    return res.status(201).json({ token });
+  } catch ({ message }) {
+    console.error(message);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+  }
 }
 
 user.post('/',
