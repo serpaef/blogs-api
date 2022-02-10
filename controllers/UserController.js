@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
+const UserServices = require('../services/UserServices');
+
 const user = express.Router();
 
 function validateDisplayName(req, res, next) {
@@ -19,7 +21,6 @@ user.post('/',
   validateEmail,
   validatePassword,
   verifyExistingEmail,
-  create
-  );
+  create);
 
 module.exports = user;
