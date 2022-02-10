@@ -20,6 +20,8 @@ PORT=3000
 JWT_SECRET=meusegredosupersecreto
 ```
 
+**A chave JWT_SECRET é seu segredo do JWT e é necessária para funcionamento da aplicação**
+
 ## Antes de iniciar
 
 Instale as dependencias:
