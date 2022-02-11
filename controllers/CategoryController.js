@@ -25,9 +25,24 @@ async function create(req, res) {
     return res.status(500).json({ message: 'Server error, try again in a few minutes.' });
   }
 }
+
+async function getAll(_req, res) {
+  try {
+    const categories = await CategoryServices.getAll();
+
+    return res.status(200).json(categories);
+  } catch ({ message }) {
+    console.error(message);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes.' });
+  }
+}
+
 category.post('/',
   Auth,
   validateName,
-  create);
+  create)
+.get('/',
+  Auth,
+  getAll);
 
 module.exports = category;
