@@ -22,7 +22,6 @@ async function Auth(req, res, next) {
 
     next();
   } catch (err) {
-    console.log(err.message);
     return res.status(401).json({ message: 'Expired or invalid token' });
   }
 }
