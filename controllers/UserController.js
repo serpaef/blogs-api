@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
+const Auth = require('./Auth');
 const UserServices = require('../services/UserServices');
 
 const { JWT_SECRET } = process.env;
@@ -76,11 +77,25 @@ async function create(req, res) {
   }
 }
 
+async function getAll(_req, res) {
+  try {
+    const users = await UserServices.getAll();
+
+    return res.status(200).json(users);
+  } catch ({ message }) {
+    console.error(message);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+  }
+}
+
 user.post('/',
   validateDisplayName,
   validateEmail,
   validatePassword,
   verifyExistingEmail,
-  create);
+  create)
+.get('/',
+  Auth,
+  getAll);
 
 module.exports = user;

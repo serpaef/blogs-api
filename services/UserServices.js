@@ -48,10 +48,16 @@ async function create(userData) {
   return user;
 }
 
+async function getAll() {
+  const users = await User.findAll({ attributes: ['id', 'displayName', 'email', 'image'] });
+  return users;
+}
+
 module.exports = { 
   validateDisplayName,
   validateEmail,
   validatePassword,
   verifyExistingEmail,
   create,
+  getAll,
 };
