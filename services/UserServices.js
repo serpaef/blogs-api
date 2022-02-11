@@ -53,6 +53,11 @@ async function getAll() {
   return users;
 }
 
+async function getById(id) {
+  const user = await User.findByPk(id, { attributes: ['id', 'displayName', 'email', 'image'] });
+  return user.dataValues;
+}
+
 module.exports = { 
   validateDisplayName,
   validateEmail,
@@ -60,4 +65,5 @@ module.exports = {
   verifyExistingEmail,
   create,
   getAll,
+  getById,
 };

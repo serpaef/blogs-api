@@ -88,12 +88,29 @@ async function getAll(_req, res) {
   }
 }
 
+async function getById(req, res) {
+  try {
+    const { id } = req.params;
+
+    const userById = await UserServices.getById(id);
+    if (!userById) return res.status(404).json({ message: 'User does not exist' });
+
+    return res.status(200).json(userById);
+  } catch ({ message }) {
+    console.error({ message });
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+  }
+}
+
 user.post('/',
   validateDisplayName,
   validateEmail,
   validatePassword,
   verifyExistingEmail,
   create)
+.get('/:id',
+  Auth,
+  getById)
 .get('/',
   Auth,
   getAll);
