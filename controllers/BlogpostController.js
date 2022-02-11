@@ -43,11 +43,12 @@ async function verifyCategories(req, res, next) {
 
 async function create(req, res) {
   try {
-    const { title, content } = req.body;
+    const { title, content, categoryIds } = req.body;
     const { id } = req.user;
     const payload = { userId: id, title, content };
 
-    const newPost = await BlogPostServices.create(payload);
+    const newPost = await BlogPostServices.create(payload, categoryIds);
+    
     return res.status(201).json(newPost);
   } catch ({ message }) {
     console.error(message);
