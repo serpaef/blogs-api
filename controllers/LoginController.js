@@ -52,7 +52,9 @@ function validatePassword(req, res, next) {
 
 function doLogin(req, res) {
   const { user } = req;
-  const token = jwt.sign(user.email, JWT_SECRET);
+  const payload = { email: user.email, id: user.id };
+
+  const token = jwt.sign(payload, JWT_SECRET);
 
   return res.status(200).json({ token });
 }

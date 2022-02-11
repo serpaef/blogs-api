@@ -48,10 +48,22 @@ async function create(userData) {
   return user;
 }
 
+async function getAll() {
+  const users = await User.findAll({ attributes: ['id', 'displayName', 'email', 'image'] });
+  return users;
+}
+
+async function getById(id) {
+  const user = await User.findByPk(id, { attributes: ['id', 'displayName', 'email', 'image'] });
+  return user.dataValues;
+}
+
 module.exports = { 
   validateDisplayName,
   validateEmail,
   validatePassword,
   verifyExistingEmail,
   create,
+  getAll,
+  getById,
 };

@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
+const Auth = require('./Auth');
 const UserServices = require('../services/UserServices');
 
 const { JWT_SECRET } = process.env;
@@ -65,12 +66,38 @@ async function create(req, res) {
     const userData = req.body;
 
     const userCreated = await UserServices.create(userData);
+    const payload = { email: userCreated.email, id: userCreated.id };
     
-    const token = jwt.sign(userCreated.email, JWT_SECRET);
+    const token = jwt.sign(payload, JWT_SECRET);
 
     return res.status(201).json({ token });
   } catch ({ message }) {
     console.error(message);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+  }
+}
+
+async function getAll(_req, res) {
+  try {
+    const users = await UserServices.getAll();
+
+    return res.status(200).json(users);
+  } catch ({ message }) {
+    console.error(message);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+  }
+}
+
+async function getById(req, res) {
+  try {
+    const { id } = req.params;
+
+    const userById = await UserServices.getById(id);
+    if (!userById) return res.status(404).json({ message: 'User does not exist' });
+
+    return res.status(200).json(userById);
+  } catch ({ message }) {
+    console.error({ message });
     return res.status(500).json({ message: 'Server error, try again in a few minutes' });
   }
 }
@@ -80,6 +107,12 @@ user.post('/',
   validateEmail,
   validatePassword,
   verifyExistingEmail,
-  create);
+  create)
+.get('/:id',
+  Auth,
+  getById)
+.get('/',
+  Auth,
+  getAll);
 
 module.exports = user;
