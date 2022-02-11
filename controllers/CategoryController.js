@@ -1,11 +1,8 @@
 require('dotenv').config();
 
 const express = require('express');
-const jwt = require('jsonwebtoken');
 
 const Auth = require('./Auth');
-
-const { JWT_SECRET } = process.env;
 
 const category = express.Router();
 
@@ -16,7 +13,7 @@ function validateName(req, res, next) {
 }
 
 category.post('/',
-  validateName
-  Auth)
+  Auth,
+  validateName);
 
 module.exports = category;
