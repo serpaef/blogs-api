@@ -50,7 +50,8 @@ async function create(userData) {
 
 async function getAll() {
   const users = await User.findAll({ attributes: ['id', 'displayName', 'email', 'image'] });
-  return users;
+  const treatedUsers = users.map((eachUser) => eachUser.dataValues);
+  return treatedUsers;
 }
 
 async function getById(id) {
