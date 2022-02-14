@@ -4,6 +4,8 @@ const express = require('express');
 
 const Auth = require('./Auth');
 
+const SERVER_ERROR = 'Server error, try again in a few minutes';
+
 const blogpost = express.Router();
 
 const BlogPostServices = require('../services/BlogpostServices');
@@ -37,7 +39,7 @@ async function verifyCategories(req, res, next) {
     next();
   } catch ({ message }) {
     console.error(message);
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -52,7 +54,7 @@ async function create(req, res) {
     return res.status(201).json(newPost);
   } catch ({ message }) {
     console.error(message);
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -63,7 +65,7 @@ async function getAll(_req, res) {
     return res.status(200).json(posts);
   } catch (e) {
     console.log(`\n\n*${e.message}*\n\n`);
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -75,7 +77,31 @@ async function getById(req, res) {
     return res.status(200).json(post);
   } catch (e) {
     console.log(`\n\n*${e.message}*\n\n`);
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
+  }
+}
+
+async function updatePost(req, res) {
+  try {
+    const { id } = req.params;
+    const { title, content, categoryIds } = req.body;
+    const { user } = req;
+
+    if (categoryIds) {
+      return res.status(400).json({ message: 'Categories cannot be edited' });
+    }
+
+    let post = await BlogPostServices.getById(id);
+    if (!post) return res.status(404).json({ message: 'Post does not exist' });
+    if (post.user.id !== user.id) return res.status(401).json({ message: 'Unauthorized user' });
+
+    await BlogPostServices.updatePost(id, { title, content });
+    post = await BlogPostServices.getById(id);
+
+    return res.status(200).json(post);
+  } catch (e) {
+    console.log(`\n\n*${e.message}*\n\n`);
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -90,6 +116,11 @@ blogpost.post('/',
   getById)
 .get('/',
   Auth,
-  getAll);
-
+  getAll)
+.put('/:id',
+  Auth,
+  verifyTitle,
+  verifyContent,
+  updatePost);
+  
 module.exports = blogpost;
