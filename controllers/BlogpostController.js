@@ -105,6 +105,23 @@ async function updatePost(req, res) {
   }
 }
 
+async function deletePost(req, res) {
+  try {
+    const { id } = req.params;
+    const { user } = req;
+
+    const post = await BlogPostServices.getById(id);
+    if (!post) return res.status(404).json({ message: 'Post does not exist' });
+    if (post.user.id !== user.id) return res.status(401).json({ message: 'Unauthorized user' });
+
+    await BlogPostServices.deletePost(id);
+    return res.status(204).json();
+  } catch (e) {
+    console.log(`\n\n*${e.message}*\n\n`);
+    return res.status(500).json({ message: SERVER_ERROR });
+  }
+}
+
 blogpost.post('/',
   Auth,
   verifyTitle,
@@ -121,6 +138,9 @@ blogpost.post('/',
   Auth,
   verifyTitle,
   verifyContent,
-  updatePost);
-  
+  updatePost)
+.delete('/:id',
+  Auth,
+  deletePost);
+
 module.exports = blogpost;
