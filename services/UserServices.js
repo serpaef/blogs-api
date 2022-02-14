@@ -60,6 +60,10 @@ async function getById(id) {
   return false;
 }
 
+async function deleteUser(id) {
+  await User.destroy({ where: { id } });
+}
+
 module.exports = { 
   validateDisplayName,
   validateEmail,
@@ -68,4 +72,5 @@ module.exports = {
   create,
   getAll,
   getById,
+  deleteUser,
 };
