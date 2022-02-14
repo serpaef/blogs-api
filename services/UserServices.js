@@ -56,7 +56,8 @@ async function getAll() {
 
 async function getById(id) {
   const user = await User.findByPk(id, { attributes: ['id', 'displayName', 'email', 'image'] });
-  return user.dataValues;
+  if (user) return user.dataValues;
+  return false;
 }
 
 module.exports = { 
