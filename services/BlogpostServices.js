@@ -43,4 +43,13 @@ async function getById(id) {
   return treatedPost;
 }
 
-module.exports = { create, getAll, getById };
+async function updatePost(id, payload) {
+  await BlogPost.update(payload, { where: { id } });
+}
+
+module.exports = {
+  create,
+  getAll,
+  getById,
+  updatePost,
+};
