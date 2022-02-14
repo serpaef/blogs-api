@@ -48,10 +48,21 @@ async function create(req, res) {
     const payload = { userId: id, title, content };
 
     const newPost = await BlogPostServices.create(payload, categoryIds);
-    
+
     return res.status(201).json(newPost);
   } catch ({ message }) {
     console.error(message);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+  }
+}
+
+async function getAll(_req, res) {
+  try {
+    const posts = await BlogPostServices.getAll();
+
+    return res.status(200).json(posts);
+  } catch (e) {
+    console.log(`\n\n*${e.message}*\n\n`);
     return res.status(500).json({ message: 'Server error, try again in a few minutes' });
   }
 }
@@ -61,6 +72,9 @@ blogpost.post('/',
   verifyTitle,
   verifyContent,
   verifyCategories,
-  create);
+  create)
+.get('/',
+  Auth,
+  getAll);
 
 module.exports = blogpost;
