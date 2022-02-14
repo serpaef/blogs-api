@@ -1,5 +1,3 @@
-WIP...
-
 # blogs-api
 
 Projeto desenvolvido durante o módulo de back-end do curso de desenvolvimento web da Trybe. A API trata-se de um sistema de gerenciamento de vendas construido em NodeJs usando o ORM Sequelize, onde é possível criar, visualizar, deletar e atualizar usuários, categorias e postagens de um blog.
