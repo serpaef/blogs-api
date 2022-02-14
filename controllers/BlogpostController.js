@@ -67,12 +67,27 @@ async function getAll(_req, res) {
   }
 }
 
+async function getById(req, res) {
+  try {
+    const { id } = req.params;
+    const post = await BlogPostServices.getById(id);
+    if (!post || post === null) return res.status(404).json({ message: 'Post does not exist' });
+    return res.status(200).json(post);
+  } catch (e) {
+    console.log(`\n\n*${e.message}*\n\n`);
+    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+  }
+}
+
 blogpost.post('/',
   Auth,
   verifyTitle,
   verifyContent,
   verifyCategories,
   create)
+.get('/:id',
+  Auth,
+  getById)
 .get('/',
   Auth,
   getAll);
