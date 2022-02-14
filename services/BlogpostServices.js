@@ -27,4 +27,20 @@ async function getAll() {
   return treatedPosts;
 }
 
-module.exports = { create, getAll };
+async function getById(id) {
+  const post = await BlogPost.findOne({
+    where: { id },
+    include: [
+      { model: User,
+        as: 'user',
+        attributes: { exclude: ['password'] },
+      },
+      { model: Category, as: 'categories' },
+    ],
+  });
+  if (!post) return false;
+  const treatedPost = { ...post.dataValues, user: post.user.dataValues };
+  return treatedPost;
+}
+
+module.exports = { create, getAll, getById };
