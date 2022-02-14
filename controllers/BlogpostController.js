@@ -122,12 +122,32 @@ async function deletePost(req, res) {
   }
 }
 
+async function findPosts(req, res) {
+  try {
+    const { q } = req.query;
+    if (!q || q === '') {
+      const posts = await BlogPostServices.getAll();
+
+      return res.status(200).json(posts);
+    }
+    const posts = await BlogPostServices.findPosts(q);
+
+    return res.status(200).json(posts);
+  } catch (e) {
+    console.log(`\n\n*${e.message}*\n\n`);
+    return res.status(500).json({ message: SERVER_ERROR });
+  }
+}
+
 blogpost.post('/',
   Auth,
   verifyTitle,
   verifyContent,
   verifyCategories,
   create)
+.get('/search',
+  Auth,
+  findPosts)
 .get('/:id',
   Auth,
   getById)
