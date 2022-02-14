@@ -56,7 +56,12 @@ async function getAll() {
 
 async function getById(id) {
   const user = await User.findByPk(id, { attributes: ['id', 'displayName', 'email', 'image'] });
-  return user.dataValues;
+  if (user) return user.dataValues;
+  return false;
+}
+
+async function deleteUser(id) {
+  await User.destroy({ where: { id } });
 }
 
 module.exports = { 
@@ -67,4 +72,5 @@ module.exports = {
   create,
   getAll,
   getById,
+  deleteUser,
 };

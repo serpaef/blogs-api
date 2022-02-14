@@ -8,6 +8,8 @@ const UserServices = require('../services/UserServices');
 
 const { JWT_SECRET } = process.env;
 
+const SERVER_ERROR = 'Server error, try again in a few minutes';
+
 const user = express.Router();
 
 function validateDisplayName(req, res, next) {
@@ -57,7 +59,7 @@ async function verifyExistingEmail(req, res, next) {
     next();
   } catch ({ message }) {
     console.log(message);
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -73,7 +75,7 @@ async function create(req, res) {
     return res.status(201).json({ token });
   } catch ({ message }) {
     console.error(message);
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -84,7 +86,7 @@ async function getAll(_req, res) {
     return res.status(200).json(users);
   } catch ({ message }) {
     console.error(message);
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -98,7 +100,18 @@ async function getById(req, res) {
     return res.status(200).json(userById);
   } catch ({ message }) {
     console.error({ message });
-    return res.status(500).json({ message: 'Server error, try again in a few minutes' });
+    return res.status(500).json({ message: SERVER_ERROR });
+  }
+}
+
+async function deleteUser(req, res) {
+  try {
+    const { id } = req.user;
+    await UserServices.deleteUser(id);
+    return res.status(204).json();
+  } catch ({ message }) {
+    console.error({ message });
+    return res.status(500).json({ message: SERVER_ERROR });
   }
 }
 
@@ -113,6 +126,9 @@ user.post('/',
   getById)
 .get('/',
   Auth,
-  getAll);
+  getAll)
+.delete('/me',
+  Auth,
+  deleteUser);
 
 module.exports = user;
