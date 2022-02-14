@@ -47,9 +47,14 @@ async function updatePost(id, payload) {
   await BlogPost.update(payload, { where: { id } });
 }
 
+async function deletePost(id) {
+  await BlogPost.destroy({ where: { id } });
+}
+
 module.exports = {
   create,
   getAll,
   getById,
   updatePost,
+  deletePost,
 };
